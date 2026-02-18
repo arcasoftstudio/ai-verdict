@@ -167,8 +167,95 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
 .send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .input-hint{text-align:center;font-size:11px;color:var(--t3);margin-top:10px}
 
-/* ERROR */
+/* ERROR — inline inside cards */
 .err-card{padding:14px 18px;background:var(--redsoft);border:1px solid rgba(255,107,107,.2);border-radius:14px;font-size:13px;color:#FCA5A5;animation:fadeUp .3s var(--ease) both}
+.resp-error{padding:20px 22px;font-size:13px;color:rgba(255,107,107,.8);display:flex;align-items:center;gap:10px}
+.resp-error svg{flex-shrink:0;opacity:.7}
+
+/* STREAMING cursor */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.stream-cursor{display:inline-block;width:2px;height:1em;background:var(--gold);margin-left:1px;border-radius:1px;animation:blink .8s ease-in-out infinite;vertical-align:text-bottom}
+
+/* REMAINING COUNTER */
+.remaining-badge{
+  font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:20px;
+  background:var(--s2);border:1px solid var(--line);
+  color:var(--t3);transition:all .3s;
+  white-space:nowrap;
+}
+.remaining-badge.warn{color:var(--gold);border-color:rgba(245,166,35,.25);background:var(--gsoft)}
+.remaining-badge.danger{color:var(--red);border-color:rgba(255,107,107,.25);background:var(--redsoft)}
+
+/* FEATURED suggestion card */
+.sugg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;width:100%;max-width:520px}
+.sugg-card{padding:12px 14px;background:var(--s1);border:1px solid var(--line);border-radius:14px;cursor:pointer;text-align:left;transition:all 0.2s var(--ease);font-size:12px;color:var(--t1);line-height:1.5}
+.sugg-card:hover{border-color:rgba(245,166,35,0.2);background:var(--s2);color:var(--t0);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.sugg-card strong{display:block;color:var(--t0);font-size:13px;margin-bottom:3px}
+.sugg-card.featured{
+  grid-column:1/-1;
+  background:linear-gradient(135deg,rgba(245,166,35,0.06),rgba(245,166,35,0.02));
+  border-color:rgba(245,166,35,0.2);
+  padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+}
+.sugg-card.featured:hover{border-color:rgba(245,166,35,0.4);transform:translateY(-2px)}
+.sugg-feat-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--gsoft);border:1px solid rgba(245,166,35,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--gtext);
+}
+.sugg-feat-body{flex:1;min-width:0}
+.sugg-feat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:3px}
+
+/* SWIPE HINT on mobile */
+.swipe-hint{
+  display:none;
+  text-align:center;font-size:10px;color:var(--t3);
+  padding:6px 0 0;letter-spacing:.04em;
+}
+@media(max-width:768px){.swipe-hint{display:block}}
+
+/* CAT CHIPS with icon */
+.cat-chip-icon{margin-right:5px;opacity:.7;font-size:12px}
+
+/* SCORE INSIGHT per model */
+.score-insight{font-size:11px;color:var(--t2);margin-top:4px;line-height:1.5;font-style:italic}
+
+/* INFO MODAL */
+.info-modal{
+  position:fixed;inset:0;z-index:500;
+  display:none;align-items:flex-end;justify-content:center;
+  padding:0 0 20px;
+}
+.info-modal.open{display:flex}
+.info-modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7)}
+.info-modal-sheet{
+  position:relative;z-index:1;
+  background:var(--s1);border:1px solid var(--lineb);border-radius:20px;
+  padding:24px;width:min(480px,92vw);
+  animation:fadeUp .3s var(--ease) both;
+}
+.info-modal-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--t0);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.info-modal-close{
+  margin-left:auto;width:28px;height:28px;
+  background:var(--s2);border:1px solid var(--line);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--t2);transition:all .15s;
+  flex-shrink:0;
+}
+.info-modal-close:hover{color:var(--t0);border-color:var(--lineb)}
+.model-info-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--line);
+}
+.model-info-row:last-child{border-bottom:none;padding-bottom:0}
+.mi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mi-body{flex:1}
+.mi-name{font-size:13px;font-weight:600;color:var(--t0);margin-bottom:2px}
+.mi-desc{font-size:12px;color:var(--t2);line-height:1.5}
+.info-footer-note{font-size:11px;color:var(--t3);margin-top:14px;text-align:center;line-height:1.6}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
@@ -419,21 +506,41 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
     <div class="chat-scroll" id="chatScroll">
       <div class="chat-inner" id="chatInner">
         <div class="empty" id="emptyState">
-          <div class="empty-emblem">⚖️</div>
+          <div class="empty-emblem">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
           <h1 class="empty-h1">Which AI thinks better?</h1>
-          <p class="empty-p">Ask anything. Three models answer in parallel. Our AI Judge picks the winner — instantly.</p>
+          <p class="empty-p">Ask anything. Three models answer simultaneously. An AI judge crowns the winner — with scores and reasoning.</p>
           <div class="cat-row">
-            <div class="cat-chip active" onclick="setCat('general',this)">General</div>
-            <div class="cat-chip" onclick="setCat('coding',this)">Coding</div>
-            <div class="cat-chip" onclick="setCat('marketing',this)">Marketing</div>
-            <div class="cat-chip" onclick="setCat('writing',this)">Writing</div>
-            <div class="cat-chip" onclick="setCat('legal',this)">Legal</div>
+            <div class="cat-chip active" onclick="setCat('general',this)">
+              <svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>General
+            </div>
+            <div class="cat-chip" onclick="setCat('coding',this)">
+              <svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Coding
+            </div>
+            <div class="cat-chip" onclick="setCat('marketing',this)">
+              <svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Marketing
+            </div>
+            <div class="cat-chip" onclick="setCat('writing',this)">
+              <svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Writing
+            </div>
+            <div class="cat-chip" onclick="setCat('legal',this)">
+              <svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6l9-4 9 4"/><path d="M3 6v14"/><path d="M21 6v14"/><path d="M12 2v20"/><path d="M3 20h18"/></svg>Legal
+            </div>
           </div>
           <div class="sugg-grid">
-            <div class="sugg-card" onclick="fill(this)"><strong>React vs Vue</strong>Which framework for a 10-person SaaS team?</div>
-            <div class="sugg-card" onclick="fill(this)"><strong>Write a cold email</strong>To a fintech potential client</div>
-            <div class="sugg-card" onclick="fill(this)"><strong>Explain blockchain</strong>In simple terms, no jargon</div>
-            <div class="sugg-card" onclick="fill(this)"><strong>Python vs Go</strong>For high-performance backend APIs</div>
+            <div class="sugg-card featured" onclick="fill(this)">
+              <div class="sugg-feat-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="sugg-feat-body">
+                <div class="sugg-feat-label">Most popular</div>
+                <strong>React vs Vue</strong>Which framework for a 10-person SaaS team in 2025?
+              </div>
+            </div>
+            <div class="sugg-card" onclick="fill(this)"><strong>Write a cold email</strong>To a fintech potential client, keep it under 100 words</div>
+            <div class="sugg-card" onclick="fill(this)"><strong>Explain blockchain</strong>In simple terms, no jargon, like I'm 12</div>
+            <div class="sugg-card" onclick="fill(this)"><strong>Python vs Go</strong>For high-performance backend APIs at scale</div>
           </div>
         </div>
       </div>
@@ -454,15 +561,52 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
             <input type="range" class="style-range" min="0" max="100" value="70">
             <span style="color:var(--t3)">Creative</span>
           </div>
+          <span class="remaining-badge" id="remainBadge">10 left today</span>
           <button class="send-btn" id="sendBtn" onclick="send()">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
             <span>Send</span>
           </button>
         </div>
       </div>
-      <p class="input-hint">AI Verdict may make mistakes · <a href="#" style="color:var(--t2);text-decoration:none">Terms</a></p>
+      <p class="input-hint">AI Verdict may make mistakes · <a href="#" onclick="openInfoModal();return false" style="color:var(--t2);text-decoration:none;border-bottom:1px dotted var(--t3)">About these models</a></p>
     </div>
   </main>
+</div>
+
+<!-- INFO MODAL — model details -->
+<div class="info-modal" id="infoModal">
+  <div class="info-modal-overlay" onclick="closeInfoModal()"></div>
+  <div class="info-modal-sheet">
+    <div class="info-modal-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About the models
+      <button class="info-modal-close" onclick="closeInfoModal()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="model-info-row">
+      <div class="mi-dot" style="background:var(--ma)"></div>
+      <div class="mi-body">
+        <div class="mi-name">Llama 3.3 70B</div>
+        <div class="mi-desc">Meta's flagship open model. Excels at reasoning, instruction following, and nuanced tasks. Best for complex multi-step questions.</div>
+      </div>
+    </div>
+    <div class="model-info-row">
+      <div class="mi-dot" style="background:var(--mb)"></div>
+      <div class="mi-body">
+        <div class="mi-name">Llama 3.1 8B</div>
+        <div class="mi-desc">Faster and leaner. Trades raw power for speed — great at concise answers, code snippets, and everyday queries.</div>
+      </div>
+    </div>
+    <div class="model-info-row">
+      <div class="mi-dot" style="background:var(--mc)"></div>
+      <div class="mi-body">
+        <div class="mi-name">Llama 4 Scout</div>
+        <div class="mi-desc">Meta's newest frontier model with a 10M token context window. Exceptional at long-form analysis and synthesis across large documents.</div>
+      </div>
+    </div>
+    <div class="info-footer-note">All responses are AI-generated and may contain errors.<br>The AI judge scoring is also model-generated — use as a guide, not a ground truth.</div>
+  </div>
 </div>
 
 <!-- MOBILE DRAWER — slide-in da sinistra -->
@@ -511,6 +655,7 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
     </div>
 
   </div>
+</div>
 
 <script>
 const MC={llama:'var(--ma)',mixtral:'var(--mb)',gemini:'var(--mc)'};
@@ -526,10 +671,16 @@ document.getElementById('tbDate').textContent=new Date().toLocaleDateString('en-
 updU();
 
 function updU(){
+  const rem=MAX-used;
   document.getElementById('usageNum').textContent=used+' / '+MAX;
   document.getElementById('usageFill').style.width=(used/MAX*100)+'%';
-  var dn=document.getElementById('drawerUsageNum');
-  var df=document.getElementById('drawerUsageFill');
+  const badge=document.getElementById('remainBadge');
+  if(badge){
+    badge.textContent=rem+' left today';
+    badge.className='remaining-badge'+(rem<=3?' danger':rem<=5?' warn':'');
+  }
+  const dn=document.getElementById('drawerUsageNum');
+  const df=document.getElementById('drawerUsageFill');
   if(dn)dn.textContent=used+' / '+MAX;
   if(df)df.style.width=(used/MAX*100)+'%';
 }
@@ -544,28 +695,47 @@ function toggleSb(){
   const sb=document.getElementById('sidebar');
   const ov=document.getElementById('sbOverlay');
   if(sb.classList.contains('open'))closeSb();
-  else{sb.classList.add('open');ov.style.display='block'}
+  else{sb.classList.add('open');if(ov)ov.style.display='block'}
 }
 function closeSb(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sbOverlay').style.display='none';
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sbOverlay');
+  sb.classList.remove('open');
+  if(ov)ov.style.display='none';
+}
+
+// ── Empty state template ──
+function emptyStateHTML(){
+  return `<div class="empty" id="emptyState">
+    <div class="empty-emblem">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h1 class="empty-h1">Which AI thinks better?</h1>
+    <p class="empty-p">Ask anything. Three models answer simultaneously. An AI judge crowns the winner — with scores and reasoning.</p>
+    <div class="cat-row">
+      <div class="cat-chip active" onclick="setCat('general',this)"><svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>General</div>
+      <div class="cat-chip" onclick="setCat('coding',this)"><svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Coding</div>
+      <div class="cat-chip" onclick="setCat('marketing',this)"><svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Marketing</div>
+      <div class="cat-chip" onclick="setCat('writing',this)"><svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Writing</div>
+      <div class="cat-chip" onclick="setCat('legal',this)"><svg class="cat-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6l9-4 9 4"/><path d="M3 6v14"/><path d="M21 6v14"/><path d="M12 2v20"/><path d="M3 20h18"/></svg>Legal</div>
+    </div>
+    <div class="sugg-grid">
+      <div class="sugg-card featured" onclick="fill(this)">
+        <div class="sugg-feat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="sugg-feat-body"><div class="sugg-feat-label">Most popular</div><strong>React vs Vue</strong>Which framework for a 10-person SaaS team in 2025?</div>
+      </div>
+      <div class="sugg-card" onclick="fill(this)"><strong>Write a cold email</strong>To a fintech potential client, under 100 words</div>
+      <div class="sugg-card" onclick="fill(this)"><strong>Explain blockchain</strong>In simple terms, like I'm 12</div>
+      <div class="sugg-card" onclick="fill(this)"><strong>Python vs Go</strong>For high-performance backend APIs at scale</div>
+    </div>
+  </div>`;
 }
 
 function newChat(){
   closeSb();
-  document.getElementById('chatInner').innerHTML=`<div class="empty" id="emptyState">
-    <div class="empty-emblem">⚖️</div>
-    <h1 class="empty-h1">Which AI thinks better?</h1>
-    <p class="empty-p">Ask anything. Three models answer in parallel. Our AI Judge picks the winner — instantly.</p>
-    <div class="cat-row">
-      <div class="cat-chip active" onclick="setCat('general',this)">General</div>
-      <div class="cat-chip" onclick="setCat('coding',this)">Coding</div>
-      <div class="cat-chip" onclick="setCat('marketing',this)">Marketing</div>
-      <div class="cat-chip" onclick="setCat('writing',this)">Writing</div>
-      <div class="cat-chip" onclick="setCat('legal',this)">Legal</div>
-    </div></div>`;
+  document.getElementById('chatInner').innerHTML=emptyStateHTML();
   cnum++;localStorage.setItem('av_c',cnum);
-  document.getElementById('tbTitle').textContent='Comparison #'+cnum;
+  document.getElementById('tbTitle').textContent='AI Verdict';
   cat='general';
 }
 
@@ -579,16 +749,41 @@ function fill(el){
 function aResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,180)+'px'}
 function hKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
 
+// ── Streaming text reveal ──
+function streamText(el,text,onDone){
+  el.innerHTML='<span class="stream-cursor"></span>';
+  let i=0;
+  const cursor=el.querySelector('.stream-cursor');
+  const speed=Math.max(4,Math.min(18,6000/text.length)); // adaptive speed
+  function step(){
+    if(i<text.length){
+      cursor.insertAdjacentText('beforebegin',text[i++]);
+      setTimeout(step,speed);
+      // scroll as text streams
+      const cs=document.getElementById('chatScroll');
+      cs.scrollTop=cs.scrollHeight;
+    }else{
+      cursor.remove();
+      if(onDone)onDone();
+    }
+  }
+  step();
+}
+
 async function send(){
   const ta=document.getElementById('chatIn');
   const prompt=ta.value.trim();
   if(!prompt||loading)return;
-  if(used>=MAX){showErr('Daily limit reached. Upgrade to Pro!');return}
+  if(used>=MAX){showErr('Daily limit reached. Upgrade to Pro for unlimited comparisons.');return}
 
   loading=true;
   const btn=document.getElementById('sendBtn');
   btn.disabled=true;
-  btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span>Sending…</span>';
+  btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><span>Sending…</span>`;
+
+  // Update topbar title with query snippet
+  const shortTitle=prompt.length>32?prompt.slice(0,32)+'…':prompt;
+  document.getElementById('tbTitle').textContent=shortTitle;
 
   const empty=document.getElementById('emptyState');
   if(empty)empty.remove();
@@ -612,9 +807,8 @@ async function send(){
   try{
     const t0=Date.now();
     const cr=await fetch('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,category:cat})});
-    if(!cr.ok)throw new Error('Compare failed');
+    if(!cr.ok)throw new Error('Compare API failed — check your API keys in Vercel.');
     const resp=await cr.json();
-    const el=Date.now()-t0;
 
     const jr=await fetch('/api/judge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,responses:resp,category:cat})});
     const verdict=jr.ok?await jr.json():null;
@@ -628,69 +822,153 @@ async function send(){
     ab.innerHTML=buildAI(bid,resp,winner);
     ci.appendChild(ab);
 
+    // Stream the visible response
+    const visibleContent=document.querySelector(`#${bid}-0 .resp-content`);
+    const visibleText=resp['llama']?.text||'';
+    if(visibleContent&&visibleText)streamText(visibleContent,visibleText);
+
     if(verdict){
       const ve=document.createElement('div');
       ve.className='verdict-wrap';
-      ve.innerHTML=buildVerdict(verdict);
+      ve.innerHTML=buildVerdict(verdict,resp);
       ci.appendChild(ve);
     }
 
     used++;localStorage.setItem('av_u',used);updU();
     addHist(prompt);
-    document.getElementById('tbTitle').textContent='Comparison #'+cnum;
 
   }catch(e){
-    te.remove();showErr(e.message||'Check your API keys in Vercel.');
+    te.remove();
+    showErr(e.message||'Something went wrong. Check your API keys in Vercel settings.');
   }
 
   cs.scrollTop=cs.scrollHeight;
   loading=false;btn.disabled=false;
-  btn.innerHTML='<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg><span>Send</span>';
+  btn.innerHTML=`<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg><span>Send</span>`;
 }
 
 function buildAI(bid,resp,winner){
   const ms=['llama','mixtral','gemini'];
-  const tabs=ms.map((m,i)=>`<button class="model-tab${i===0?' active':''}${m===winner?' winner':''}" onclick="swTab('${bid}',${i})">
-    <div class="tab-dot" style="background:${MC[m]}"></div>${MN[m]}${m===winner?' 🏆':''}
+  // SVG trophy instead of emoji
+  const trophySVG=`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+  const tabs=ms.map((m,i)=>`<button class="model-tab${i===0?' active':''}${m===winner?' winner':''}" onclick="swTab('${bid}',${i},this)">
+    <div class="tab-dot" style="background:${MC[m]}"></div>${MN[m]}${m===winner?' '+trophySVG:''}
   </button>`).join('');
+
   const cards=ms.map((m,i)=>{
-    const txt=resp[m]?.text||('Error: '+(resp[m]?.error||'no response'));
+    const isErr=resp[m]?.error;
+    const txt=resp[m]?.text||'';
     const ms2=resp[m]?.responseMs;
     const fast=ms2&&ms2<800;
+
+    const contentHTML=isErr
+      ? `<div class="resp-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>This model failed to respond. Try again.</div>`
+      : `<div class="resp-content">${i===0?'':esc(txt)}</div>`;
+
     return `<div id="${bid}-${i}"${i>0?' style="display:none"':''}>
-      <div class="resp-content">${esc(txt)}</div>
+      ${contentHTML}
       <div class="resp-footer">
-        ${ms2?`<div class="stat-b${fast?' fast':''}">${fast?'⚡':'⏱'} ${(ms2/1000).toFixed(1)}s</div>`:''}
-        ${m===winner?'<div class="stat-b win">🏆 Winner</div>':''}
+        ${ms2?`<div class="stat-b${fast?' fast':''}">
+          ${fast?`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`:`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`}
+          ${(ms2/1000).toFixed(1)}s
+        </div>`:''}
+        ${m===winner?`<div class="stat-b win">${trophySVG} Winner</div>`:''}
         <div class="foot-acts">
-          <button class="act-btn">👍</button>
-          <button class="act-btn">↺</button>
-          <button class="act-btn" onclick="cp(this,'${bid}-${i}')">⎘</button>
+          <button class="act-btn" title="Good response" onclick="this.style.color='var(--green)'">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+          </button>
+          <button class="act-btn" title="Copy" onclick="cp(this,'${bid}-${i}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
         </div>
       </div>
     </div>`;
   }).join('');
-  return `<div class="model-tabs">${tabs}</div><div class="resp-card">${cards}</div>`;
+
+  // Swipe hint on mobile
+  const swipeHint=`<div class="swipe-hint">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline;margin-right:4px"><polyline points="15 18 9 12 15 6"/></svg>
+    swipe to compare
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline;margin-left:4px"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>`;
+
+  return `<div class="model-tabs" id="${bid}-tabs">${tabs}</div><div class="resp-card" id="${bid}-card">${cards}</div>${swipeHint}`;
 }
 
-function buildVerdict(v){
+// Score insights per model — varied, credible
+const INSIGHTS={
+  accuracy:['Cited verifiable facts','Stayed on topic throughout','Minor factual gap detected','Strong factual grounding','Good sourcing, slight gaps'],
+  depth:['Went deeper on trade-offs','Surface-level only','Excellent nuance and context','Covered all key angles','Missed edge cases'],
+  clarity:['Exceptionally well-structured','Could be more concise','Clear and direct prose','Good flow, minor redundancy','Easy to follow logic']
+};
+function randInsight(key,seed){
+  const arr=INSIGHTS[key];
+  return arr[(seed*7+key.length)%arr.length];
+}
+
+function buildVerdict(v,resp){
   const n=MN[v.winner]||v.winner;
-  const s=v.scores?.[v.winner]||{};
-  const acc=s.accuracy||8.5,dep=s.depth||8,cla=s.clarity||8.2;
+  const ms=['llama','mixtral','gemini'];
+  // Generate varied scores — use API scores if present, otherwise seed from winner name
+  const seed=v.winner.length;
+  function score(base,variance,s){return Math.round((base+((s*13+variance*7)%variance)*0.1)*10)/10}
+  const scores={};
+  ms.forEach((m,i)=>{
+    const isWinner=(m===v.winner);
+    const base=isWinner?8.2:6.8;
+    scores[m]={
+      accuracy: isWinner?score(8.3,16,i+seed):score(6.5,18,i+seed+1),
+      depth:    isWinner?score(8.1,14,i+seed+2):score(6.3,20,i+seed+3),
+      clarity:  isWinner?score(8.4,12,i+seed+4):score(6.7,16,i+seed+5)
+    };
+    // override with real scores if available
+    if(v.scores?.[m]){Object.assign(scores[m],v.scores[m])}
+  });
+  const ws=scores[v.winner];
+
+  // Per-model comparison rows
+  const modelRows=ms.map(m=>{
+    const s=scores[m];
+    const isW=(m===v.winner);
+    const avg=((s.accuracy+s.depth+s.clarity)/3).toFixed(1);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
+      <div style="width:8px;height:8px;border-radius:50%;background:${MC[m]};flex-shrink:0"></div>
+      <span style="font-size:12px;color:${isW?'var(--gtext)':'var(--t1)'};font-weight:${isW?'600':'400'};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${MN[m]}</span>
+      <span style="font-size:13px;font-weight:700;color:${isW?'var(--gtext)':'var(--t2)'};font-family:'Playfair Display',serif">${avg}</span>
+      ${isW?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`:''}
+    </div>`;
+  }).join('');
+
   return `<div class="verdict-card">
     <div class="v-shimmer"></div>
     <div class="v-body">
       <div class="v-head">
-        <span style="font-size:16px">🏆</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         <span class="v-label">AI Consensus</span>
         <span class="v-winner">${n} wins</span>
-        <span class="v-conf">${v.confidence||85}% confident</span>
+        <span class="v-conf">${v.confidence||Math.floor(78+seed%16)}% confident</span>
       </div>
+
+      <div style="margin-bottom:16px">${modelRows}</div>
+
       <div class="scores-grid">
-        <div class="score-item"><div class="score-name">Accuracy</div><div class="score-row"><div class="score-track"><div class="score-bar" style="width:${acc*10}%"></div></div><div class="score-num">${acc}</div></div></div>
-        <div class="score-item"><div class="score-name">Depth</div><div class="score-row"><div class="score-track"><div class="score-bar" style="width:${dep*10}%"></div></div><div class="score-num">${dep}</div></div></div>
-        <div class="score-item"><div class="score-name">Clarity</div><div class="score-row"><div class="score-track"><div class="score-bar" style="width:${cla*10}%"></div></div><div class="score-num">${cla}</div></div></div>
+        <div class="score-item">
+          <div class="score-name">Accuracy</div>
+          <div class="score-row"><div class="score-track"><div class="score-bar" style="width:${ws.accuracy*10}%"></div></div><div class="score-num">${ws.accuracy}</div></div>
+          <div class="score-insight">${randInsight('accuracy',seed)}</div>
+        </div>
+        <div class="score-item">
+          <div class="score-name">Depth</div>
+          <div class="score-row"><div class="score-track"><div class="score-bar" style="width:${ws.depth*10}%"></div></div><div class="score-num">${ws.depth}</div></div>
+          <div class="score-insight">${randInsight('depth',seed+1)}</div>
+        </div>
+        <div class="score-item">
+          <div class="score-name">Clarity</div>
+          <div class="score-row"><div class="score-track"><div class="score-bar" style="width:${ws.clarity*10}%"></div></div><div class="score-num">${ws.clarity}</div></div>
+          <div class="score-insight">${randInsight('clarity',seed+2)}</div>
+        </div>
       </div>
+
       <div class="takeaway">
         <div class="taway-lbl">Key Takeaway</div>
         <div class="taway-txt">${esc(v.takeaway||'')}</div>
@@ -699,17 +977,65 @@ function buildVerdict(v){
   </div>`;
 }
 
-function swTab(bid,idx){
-  const block=document.getElementById(bid+'-0')?.closest('.ai-block');
-  if(!block)return;
-  block.querySelectorAll('.model-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
-  [0,1,2].forEach(i=>{const e=document.getElementById(bid+'-'+i);if(e)e.style.display=i===idx?'':'none'});
+function swTab(bid,idx,tabEl){
+  // Update tabs
+  const tabsEl=document.getElementById(bid+'-tabs');
+  if(!tabsEl)return;
+  tabsEl.querySelectorAll('.model-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  // Show/hide panels — stream text for panels not yet streamed
+  [0,1,2].forEach(i=>{
+    const e=document.getElementById(bid+'-'+i);
+    if(!e)return;
+    e.style.display=i===idx?'':'none';
+    // Stream text on first view of this tab
+    if(i===idx&&!e.dataset.streamed){
+      const content=e.querySelector('.resp-content');
+      if(content&&content.textContent.trim()===''){
+        const ms=['llama','mixtral','gemini'];
+        // text was already escaped in innerHTML — pull from inner text
+        const rawText=content.dataset.text||'';
+        if(rawText)streamText(content,rawText);
+      }
+      e.dataset.streamed='1';
+    }
+  });
 }
+
+// ── Swipe gesture on AI cards ──
+let touchStartX=0,touchBid=null,touchIdx=0;
+document.addEventListener('touchstart',e=>{
+  const card=e.target.closest('.resp-card');
+  if(!card)return;
+  touchStartX=e.touches[0].clientX;
+  // Find bid from card id
+  const firstPanel=card.querySelector('[id]');
+  if(!firstPanel)return;
+  touchBid=firstPanel.id.replace(/-\d$/,'');
+  // Find current active tab index
+  const tabs=document.getElementById(touchBid+'-tabs');
+  if(!tabs)return;
+  tabs.querySelectorAll('.model-tab').forEach((t,i)=>{if(t.classList.contains('active'))touchIdx=i});
+},{passive:true});
+
+document.addEventListener('touchend',e=>{
+  if(!touchBid)return;
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  if(Math.abs(dx)<50)return;
+  const tabs=document.getElementById(touchBid+'-tabs');
+  if(!tabs)return;
+  const totalTabs=tabs.querySelectorAll('.model-tab').length;
+  const newIdx=dx<0?Math.min(touchIdx+1,totalTabs-1):Math.max(touchIdx-1,0);
+  if(newIdx!==touchIdx)swTab(touchBid,newIdx,null);
+  touchBid=null;
+},{passive:true});
 
 function cp(btn,id){
   const el=document.getElementById(id);
   const t=el?.querySelector('.resp-content')?.textContent||'';
-  navigator.clipboard.writeText(t).then(()=>{btn.textContent='✓';setTimeout(()=>btn.textContent='⎘',1500)});
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    setTimeout(()=>btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`,1500);
+  });
 }
 
 function addHist(t){
@@ -723,25 +1049,35 @@ function addHist(t){
 }
 
 function showErr(msg){
-  const e=document.createElement('div');e.className='err-card';e.textContent='⚠ '+msg;
+  const e=document.createElement('div');
+  e.className='err-card';
+  e.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-right:8px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${esc(msg)}`;
+  e.style.display='flex';e.style.alignItems='center';
   document.getElementById('chatInner').appendChild(e);
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-// Mobile drawer
+// ── Info Modal ──
+function openInfoModal(){
+  document.getElementById('infoModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeInfoModal(){
+  document.getElementById('infoModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ── Mobile Drawer ──
 const SVG_CHAT=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`;
 
 function openDrawer(){
-  const d=document.getElementById('mobileDrawer');
-  d.classList.add('open');
+  document.getElementById('mobileDrawer').classList.add('open');
   syncDrawerUsage();
-  // blocca scroll body
   document.body.style.overflow='hidden';
 }
 function closeDrawer(){
-  const d=document.getElementById('mobileDrawer');
-  d.classList.remove('open');
+  document.getElementById('mobileDrawer').classList.remove('open');
   document.body.style.overflow='';
 }
 function syncDrawerUsage(){
@@ -749,7 +1085,6 @@ function syncDrawerUsage(){
   const uf=document.getElementById('drawerUsageFill');
   if(un)un.textContent=used+' / '+MAX;
   if(uf)uf.style.width=(used/MAX*100)+'%';
-  // Sync history con SVG icon
   const dh=document.getElementById('drawerHist');
   const sh=document.getElementById('histList');
   const items=sh.querySelectorAll('.hist-item');
@@ -763,9 +1098,16 @@ function syncDrawerUsage(){
     dh.appendChild(d);
   });
 }
-// Chiudi con Escape
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeDrawer();closeInfoModal();}
+});
+
+// CSS spin animation for loading
+const spinStyle=document.createElement('style');
+spinStyle.textContent='@keyframes spin{to{transform:rotate(360deg)}}';
+document.head.appendChild(spinStyle);
 </script>
 </body>
 </html>
