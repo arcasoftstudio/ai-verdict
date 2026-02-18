@@ -172,28 +172,161 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-/* Bottom nav mobile */
-.bottom-nav{display:none}
+/* ─── HAMBURGER BUTTON (mobile only, hidden on desktop) ─── */
+.mob-hamburger{
+  display:none;
+  align-items:center;justify-content:center;
+  width:36px;height:36px;
+  background:none;border:1px solid var(--line);
+  border-radius:10px;cursor:pointer;
+  color:var(--t1);flex-shrink:0;
+  transition:border-color .15s, background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-hamburger:hover{background:var(--s1);border-color:var(--lineb)}
+.mob-hamburger svg{display:block;transition:opacity .2s}
 
+/* bottom-nav completamente rimosso */
+.bottom-nav{display:none !important}
+
+/* ─── MOBILE DRAWER (slide-in da sinistra) ─── */
+.mobile-drawer{
+  position:fixed;inset:0;z-index:400;
+  display:none;pointer-events:none;
+}
+.mobile-drawer.open{display:block;pointer-events:auto}
+.drawer-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  transition:background .3s var(--ease);
+  cursor:pointer;
+}
+.mobile-drawer.open .drawer-overlay{background:rgba(0,0,0,0.7)}
+.drawer-sheet{
+  position:absolute;top:0;left:0;bottom:0;
+  width:min(300px, 85vw);
+  background:var(--s0);
+  border-right:1px solid var(--lineb);
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);
+  transition:transform .32s var(--ease);
+  padding-top:env(safe-area-inset-top, 0px);
+  overflow:hidden;
+}
+.mobile-drawer.open .drawer-sheet{transform:translateX(0)}
+
+/* Drawer header */
+.drawer-head{
+  padding:20px 18px 16px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.drawer-wordmark{display:flex;align-items:center;gap:10px}
+.drawer-wm-icon{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:600;font-size:13px;color:#070709;
+}
+.drawer-wm-name{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:500;color:var(--t0);
+}
+.drawer-close{
+  width:30px;height:30px;
+  background:var(--s2);border:1px solid var(--line);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--t2);flex-shrink:0;
+  transition:all .15s;
+}
+.drawer-close:hover{color:var(--t0);border-color:var(--lineb)}
+
+/* New chat button */
+.drawer-new-btn{
+  margin:14px 14px 0;
+  padding:12px 16px;
+  background:var(--s2);border:1px solid var(--lineb);
+  border-radius:12px;color:var(--t1);
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;display:flex;align-items:center;gap:10px;
+  transition:all .2s var(--ease);
+  -webkit-tap-highlight-color:transparent;
+}
+.drawer-new-btn:hover{background:var(--gsoft);border-color:rgba(245,166,35,.25);color:var(--gtext)}
+
+/* History section */
+.drawer-section-lbl{
+  padding:14px 18px 6px;
+  font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--t3);
+}
+.drawer-hist{flex:1;overflow-y:auto;padding:0 8px}
+.drawer-hist::-webkit-scrollbar{width:0}
+.drawer-item{
+  padding:10px 12px;border-radius:10px;
+  display:flex;align-items:center;gap:10px;
+  color:var(--t1);font-size:13px;cursor:pointer;
+  transition:background .15s, color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.drawer-item:hover{background:var(--s2);color:var(--t0)}
+.drawer-item svg{flex-shrink:0;opacity:.5}
+
+/* Usage + Upgrade at bottom */
+.drawer-footer{padding:12px 14px;border-top:1px solid var(--line)}
+.drawer-usage{
+  padding:14px;background:var(--s1);
+  border:1px solid var(--line);border-radius:14px;margin-bottom:10px;
+}
+.drawer-usage-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.drawer-usage-lbl{font-size:12px;color:var(--t2)}
+.drawer-usage-num{font-size:12px;color:var(--gtext);font-weight:600;font-family:'Playfair Display',serif}
+.drawer-usage-track{height:3px;background:var(--s3);border-radius:2px;margin-bottom:0;overflow:hidden}
+.drawer-usage-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:2px;transition:width .5s var(--ease)}
+.drawer-up-btn{
+  width:100%;padding:12px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  border:none;border-radius:12px;color:#070709;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 2px 10px rgba(245,166,35,.3);
+  transition:all .2s var(--ease);
+}
+.drawer-up-btn:hover{box-shadow:0 4px 16px rgba(245,166,35,.45);transform:translateY(-1px)}
+
+/* ─── MEDIA MOBILE ─── */
 @media(max-width:768px){
-  .app{grid-template-columns:1fr}
+  .app{grid-template-columns:1fr;height:100dvh}
   .sidebar{display:none}
-  .sb-overlay{display:none !important}
-  .menu-btn{display:none !important}
   .model-pills{display:none}
   .tb-btn.dsk{display:none}
   .style-tog{display:none}
-  .topbar{padding:0 16px;height:50px;background:var(--black)}
+  .active-mdls span{display:none}
+  .mob-hamburger{display:flex}
+  .mob-model-dots{display:flex !important}
+
+  .topbar{padding:0 14px;height:50px;gap:10px}
   .tb-title{font-size:14px}
   .tb-date{display:none}
-  .main{padding-bottom:60px}
+
+  .main{display:flex;flex-direction:column;height:100dvh}
+  .chat-scroll{flex:1;overflow-y:auto;min-height:0}
   .chat-inner{padding:16px 14px 12px;gap:20px}
-  .input-sec{padding:8px 12px 12px}
-  .chat-ta{font-size:14px;padding:12px 14px 4px}
-  .input-bar{padding:6px 10px 10px}
+
+  .input-sec{
+    padding:8px 12px 12px;
+    padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    background:var(--black);
+    flex-shrink:0;
+  }
+  .input-box{border-radius:16px}
+  .chat-ta{font-size:16px;padding:12px 14px 4px}
+  .input-bar{padding:6px 10px 10px;gap:6px}
+
   .sugg-grid{grid-template-columns:1fr;max-width:100%}
   .empty-h1{font-size:22px}
   .empty-p{font-size:13px}
+
   .model-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding:5px 5px 0}
   .model-tab{flex:0 0 auto;font-size:11px;padding:7px 12px}
   .scores-grid{gap:10px}
@@ -201,74 +334,16 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
   .resp-footer{padding:8px 16px 12px;flex-wrap:wrap;gap:6px}
   .v-body{padding:16px}
   .msg-text{font-size:14px}
-
-  /* BOTTOM NAV */
-  .bottom-nav{
-    display:flex;position:fixed;bottom:0;left:0;right:0;
-    height:60px;background:var(--s0);border-top:1px solid var(--line);
-    z-index:100;align-items:center;justify-content:space-around;
-    padding:0 8px;padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-  .bn-item{
-    display:flex;flex-direction:column;align-items:center;gap:3px;
-    padding:6px 16px;border-radius:10px;cursor:pointer;
-    background:none;border:none;color:var(--t2);
-    font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;flex:1;
-    transition:color .15s;
-  }
-  .bn-item.active,.bn-item:hover{color:var(--gtext)}
-  .bn-icon{font-size:20px;line-height:1}
-
-  /* MOBILE DRAWER */
-  .mobile-drawer{position:fixed;inset:0;z-index:300;display:none;flex-direction:column}
-  .mobile-drawer.open{display:flex}
-  .drawer-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.75)}
-  .drawer-sheet{
-    position:absolute;bottom:0;left:0;right:0;
-    background:var(--s0);border-radius:20px 20px 0 0;
-    border-top:1px solid var(--line);padding:16px;
-    max-height:75vh;overflow-y:auto;
-    animation:slideUp .3s var(--ease) both;
-  }
-  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  .drawer-handle{width:36px;height:4px;background:var(--s3);border-radius:2px;margin:0 auto 16px}
-  .drawer-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--t0);margin-bottom:14px}
-  .drawer-new-btn{
-    width:100%;padding:13px;
-    background:linear-gradient(135deg,var(--gold2),var(--gold));
-    border:none;border-radius:12px;color:#070709;
-    font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;
-    cursor:pointer;margin-bottom:14px;
-    box-shadow:0 2px 10px rgba(245,166,35,0.3);
-  }
-  .drawer-item{
-    padding:13px 14px;border-radius:10px;
-    display:flex;align-items:center;gap:10px;
-    color:var(--t1);font-size:14px;cursor:pointer;
-    border-bottom:1px solid var(--line);transition:background .15s;
-  }
-  .drawer-item:last-child{border-bottom:none}
-  .drawer-item:hover{background:var(--s1);color:var(--t0)}
-  .drawer-usage{
-    padding:12px 14px;background:var(--s1);
-    border:1px solid var(--line);border-radius:12px;margin-top:4px;
-  }
-  .drawer-usage-top{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}
-  .drawer-usage-lbl{color:var(--t2)}
-  .drawer-usage-num{color:var(--gtext);font-weight:600}
-  .drawer-usage-track{height:3px;background:var(--s3);border-radius:2px;margin-bottom:12px;overflow:hidden}
-  .drawer-usage-fill{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:2px}
-  .drawer-up-btn{
-    width:100%;padding:10px;background:var(--gsoft);
-    border:1px solid rgba(245,166,35,0.25);border-radius:10px;
-    color:var(--gtext);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
-    cursor:pointer;
-  }
 }
+
 @media(max-width:400px){
   .scores-grid{grid-template-columns:1fr 1fr}
   .send-btn span{display:none}
   .v-conf{display:none}
+}
+@supports not (height:100dvh){
+  .app{height:100vh}
+  .main{height:100vh}
 }
 </style>
 </head>
@@ -311,18 +386,34 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
 
   <main class="main">
     <header class="topbar">
-      <button class="menu-btn" id="menuBtn" onclick="toggleSb()">
-        <span></span><span></span><span></span>
+      <!-- Hamburger: visibile solo su mobile -->
+      <button class="mob-hamburger" id="mobHamburger" onclick="openDrawer()" aria-label="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
       </button>
       <span class="tb-title" id="tbTitle">AI Verdict</span>
       <span class="tb-date" id="tbDate"></span>
       <div class="tb-spacer"></div>
+      <!-- Model pills desktop -->
       <div class="model-pills">
         <div class="mpill"><div class="d" style="background:var(--ma)"></div>Llama 70B</div>
         <div class="mpill"><div class="d" style="background:var(--mb)"></div>Llama 8B</div>
         <div class="mpill"><div class="d" style="background:var(--mc)"></div>Llama 4</div>
       </div>
-      <button class="tb-btn dsk" title="Export">⬇</button>
+      <!-- Model dots mobile only -->
+      <div class="mob-model-dots" style="display:none;align-items:center;gap:6px">
+        <div class="mpip" style="background:var(--ma)"></div>
+        <div class="mpip" style="background:var(--mb)"></div>
+        <div class="mpip" style="background:var(--mc)"></div>
+        <span style="font-size:10px;color:var(--t2)">3 models</span>
+      </div>
+      <!-- Export btn desktop only -->
+      <button class="tb-btn dsk" title="Export">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
     </header>
 
     <div class="chat-scroll" id="chatScroll">
@@ -374,44 +465,52 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
   </main>
 </div>
 
-<!-- BOTTOM NAV mobile -->
-<nav class="bottom-nav">
-  <button class="bn-item active" id="bn-chat" onclick="bnSwitch('chat')">
-    <span class="bn-icon">💬</span>Chat
-  </button>
-  <button class="bn-item" id="bn-new" onclick="newChat()">
-    <span class="bn-icon">✦</span>New
-  </button>
-  <button class="bn-item" id="bn-hist" onclick="openDrawer()">
-    <span class="bn-icon">🕐</span>History
-  </button>
-  <button class="bn-item" id="bn-pro">
-    <span class="bn-icon">⚡</span>Pro
-  </button>
-</nav>
-
-<!-- MOBILE DRAWER (bottom sheet for history) -->
+<!-- MOBILE DRAWER — slide-in da sinistra -->
 <div class="mobile-drawer" id="mobileDrawer">
   <div class="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer-sheet">
-    <div class="drawer-handle"></div>
-    <div class="drawer-title">Comparisons</div>
-    <button class="drawer-new-btn" onclick="newChat();closeDrawer()">+ New Comparison</button>
-    <div id="drawerHist">
-      <div style="color:var(--t3);font-size:13px;padding:4px 0 8px">No history yet</div>
-    </div>
-    <div class="drawer-usage">
-      <div class="drawer-usage-top">
-        <span class="drawer-usage-lbl">Daily usage</span>
-        <span class="drawer-usage-num" id="drawerUsageNum">0 / 10</span>
+
+    <!-- Header drawer -->
+    <div class="drawer-head">
+      <div class="drawer-wordmark">
+        <div class="drawer-wm-icon">V</div>
+        <span class="drawer-wm-name">AI Verdict</span>
       </div>
-      <div class="drawer-usage-track">
-        <div class="drawer-usage-fill" id="drawerUsageFill" style="width:0%"></div>
-      </div>
-      <button class="drawer-up-btn">Upgrade to Pro ↗</button>
+      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
+
+    <!-- New Comparison -->
+    <button class="drawer-new-btn" onclick="newChat();closeDrawer()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Comparison
+    </button>
+
+    <!-- History -->
+    <div class="drawer-section-lbl">Recent</div>
+    <div class="drawer-hist" id="drawerHist">
+      <div style="color:var(--t3);font-size:12px;padding:8px 12px">No comparisons yet</div>
+    </div>
+
+    <!-- Footer: usage + upgrade -->
+    <div class="drawer-footer">
+      <div class="drawer-usage">
+        <div class="drawer-usage-top">
+          <span class="drawer-usage-lbl">Daily usage</span>
+          <span class="drawer-usage-num" id="drawerUsageNum">0 / 10</span>
+        </div>
+        <div class="drawer-usage-track">
+          <div class="drawer-usage-fill" id="drawerUsageFill" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="drawer-up-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Upgrade to Pro
+      </button>
+    </div>
+
   </div>
-</div>
 
 <script>
 const MC={llama:'var(--ma)',mixtral:'var(--mb)',gemini:'var(--mc)'};
@@ -631,17 +730,26 @@ function showErr(msg){
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
 // Mobile drawer
+const SVG_CHAT=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`;
+
 function openDrawer(){
-  document.getElementById('mobileDrawer').classList.add('open');
+  const d=document.getElementById('mobileDrawer');
+  d.classList.add('open');
   syncDrawerUsage();
+  // blocca scroll body
+  document.body.style.overflow='hidden';
 }
 function closeDrawer(){
-  document.getElementById('mobileDrawer').classList.remove('open');
+  const d=document.getElementById('mobileDrawer');
+  d.classList.remove('open');
+  document.body.style.overflow='';
 }
 function syncDrawerUsage(){
-  document.getElementById('drawerUsageNum').textContent=used+' / '+MAX;
-  document.getElementById('drawerUsageFill').style.width=(used/MAX*100)+'%';
-  // Sync history
+  const un=document.getElementById('drawerUsageNum');
+  const uf=document.getElementById('drawerUsageFill');
+  if(un)un.textContent=used+' / '+MAX;
+  if(uf)uf.style.width=(used/MAX*100)+'%';
+  // Sync history con SVG icon
   const dh=document.getElementById('drawerHist');
   const sh=document.getElementById('histList');
   const items=sh.querySelectorAll('.hist-item');
@@ -650,18 +758,13 @@ function syncDrawerUsage(){
   items.forEach(item=>{
     const d=document.createElement('div');
     d.className='drawer-item';
-    d.innerHTML='<span style="font-size:14px">💬</span>'+item.textContent.trim();
+    d.innerHTML=SVG_CHAT+`<span>${esc(item.textContent.trim())}</span>`;
     d.onclick=()=>closeDrawer();
     dh.appendChild(d);
   });
 }
-
-// Bottom nav switch
-function bnSwitch(tab){
-  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
-  const el=document.getElementById('bn-'+tab);
-  if(el)el.classList.add('active');
-}
+// Chiudi con Escape
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 
 </script>
 </body>
