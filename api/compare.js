@@ -1,6 +1,7 @@
-// api/compare.js — chiama 3 modelli Llama in parallelo via Groq (gratis, no carta)
+// api/compare.js — chiama 3 modelli in parallelo via Groq + verifica auth Clerk
 
 import { checkRateLimit, getIP } from './_rateLimit.js';
+import { verifyClerkToken } from './auth.js';
 
 const GROQ_API = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -16,6 +17,12 @@ const SYSTEM_PROMPTS = {
   marketing: 'You are a senior marketing strategist. Provide actionable, compelling copy and strategy.',
   writing:   'You are a professional writer and editor. Provide clear, engaging, well-structured text.',
   legal:     'You are a knowledgeable legal assistant. Provide balanced information with appropriate disclaimers.',
+};
+
+// Limite giornaliero per piano
+const DAILY_LIMITS = {
+  free: 10,
+  pro: 999999,
 };
 
 async function callModel(modelKey, prompt, category, apiKey) {
@@ -41,7 +48,7 @@ async function callModel(modelKey, prompt, category, apiKey) {
     if (!res.ok) {
       const err = await res.text();
       console.error(`Model ${modelKey} error:`, err);
-      return { error: `Model unavailable` };
+      return { error: 'Model unavailable' };
     }
 
     const data = await res.json();
@@ -52,36 +59,34 @@ async function callModel(modelKey, prompt, category, apiKey) {
     return { text, responseMs, tokens };
 
   } catch (e) {
-    console.error(`Model ${modelKey} threw:`, e.message);
     return { error: e.message };
   }
 }
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  const groqKey = process.env.GROQ_API_KEY;
+  if (!groqKey) {
+    return res.status(500).json({ error: 'GROQ_API_KEY non configurata su Vercel' });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'GROQ_API_KEY not set — aggiungila su Vercel → Settings → Environment Variables' });
+  // ── Auth: verifica token Clerk ──
+  const auth = await verifyClerkToken(req);
+  if (!auth.valid) {
+    return res.status(401).json({ error: 'Non autenticato. Fai login per continuare.' });
   }
 
-  // Rate limit: 30 richieste/ora per IP
+  // ── Rate limit IP (protezione aggiuntiva) ──
   const ip = getIP(req);
-  const { allowed, remaining, resetIn } = checkRateLimit(ip, 30);
+  const { allowed, remaining, resetIn } = checkRateLimit(ip, 60);
   if (!allowed) {
-    return res.status(429).json({
-      error: `Limite raggiunto. Riprova tra ${resetIn} minuti.`,
-    });
+    return res.status(429).json({ error: `Limite raggiunto. Riprova tra ${resetIn} minuti.` });
   }
-  res.setHeader('X-RateLimit-Remaining', remaining);
 
   const { prompt, category = 'general' } = req.body || {};
 
@@ -94,9 +99,9 @@ export default async function handler(req, res) {
 
   // Chiama tutti e 3 i modelli in parallelo
   const [llama, mixtral, gemini] = await Promise.all([
-    callModel('llama',   prompt.trim(), category, apiKey),
-    callModel('mixtral', prompt.trim(), category, apiKey),
-    callModel('gemini',  prompt.trim(), category, apiKey),
+    callModel('llama',   prompt.trim(), category, groqKey),
+    callModel('mixtral', prompt.trim(), category, groqKey),
+    callModel('gemini',  prompt.trim(), category, groqKey),
   ]);
 
   return res.status(200).json({ llama, mixtral, gemini });
