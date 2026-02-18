@@ -823,29 +823,53 @@ body::before{content:'';position:fixed;top:-20vh;left:50%;transform:translateX(-
 
 <script>
 // ─── CLERK AUTH ───────────────────────────────────────────────────────────
-let clerkToken = null;   // JWT token per le API calls
-let currentUser = null;  // oggetto utente Clerk
+let clerkToken = null;
+let currentUser = null;
+let clerkReady = false;
 
-// Inizializza Clerk quando lo script è caricato
-window.addEventListener('load', async () => {
+// Pattern corretto per Clerk con script async
+async function initClerk() {
   try {
+    // Aspetta che Clerk sia disponibile nel window
+    if (!window.Clerk) {
+      await new Promise((resolve) => {
+        const check = setInterval(() => {
+          if (window.Clerk) { clearInterval(check); resolve(); }
+        }, 50);
+        // Timeout dopo 5 secondi — funziona comunque senza auth
+        setTimeout(() => { clearInterval(check); resolve(); }, 5000);
+      });
+    }
+
+    if (!window.Clerk) {
+      console.warn('Clerk non disponibile — funziona senza auth');
+      onUserSignedOut();
+      return;
+    }
+
     await window.Clerk.load();
-    const user = window.Clerk.user;
-    if (user) {
-      await onUserSignedIn(user);
+    clerkReady = true;
+
+    if (window.Clerk.user) {
+      await onUserSignedIn(window.Clerk.user);
     } else {
       onUserSignedOut();
     }
-    // Ascolta cambi di stato auth
-    window.Clerk.addListener(({ user }) => {
-      if (user) onUserSignedIn(user);
+
+    // Ascolta cambi auth (login/logout)
+    window.Clerk.addListener(async ({ user }) => {
+      if (user) await onUserSignedIn(user);
       else onUserSignedOut();
     });
+
   } catch(e) {
-    console.warn('Clerk not loaded:', e.message);
-    onUserSignedOut(); // Fallback: funziona senza auth (solo rate limit IP)
+    console.warn('Clerk init error:', e.message);
+    onUserSignedOut();
   }
-});
+}
+
+// Avvia subito
+initClerk();
 
 async function onUserSignedIn(user) {
   currentUser = user;
@@ -853,23 +877,19 @@ async function onUserSignedIn(user) {
     clerkToken = await window.Clerk.session.getToken();
   } catch(e) { clerkToken = null; }
 
-  // Aggiorna UI sidebar
   const name = user.firstName || user.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'User';
-  const initials = name.charAt(0).toUpperCase();
   const avatarUrl = user.profileImageUrl || user.imageUrl;
 
   const avatarEl = document.getElementById('userAvatar');
   if (avatarUrl) {
     avatarEl.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
   } else {
-    avatarEl.textContent = initials;
+    avatarEl.textContent = name.charAt(0).toUpperCase();
   }
   avatarEl.style.background = 'linear-gradient(135deg,#4F46E5,#7C3AED)';
-
   document.getElementById('userName').textContent = name;
   document.getElementById('userPlan').textContent = 'Free · 10/day';
   document.getElementById('userLoginIcon').style.display = 'none';
-
   closeAuthModal();
 }
 
@@ -884,12 +904,8 @@ function onUserSignedOut() {
 }
 
 function handleUserClick() {
-  if (currentUser) {
-    // Mostra menu logout
-    showUserMenu();
-  } else {
-    openAuthModal();
-  }
+  if (currentUser) showUserMenu();
+  else openAuthModal();
 }
 
 function showUserMenu() {
@@ -912,6 +928,7 @@ function showUserMenu() {
 }
 
 async function signInWithGoogle() {
+  if (!clerkReady) { alert('Auth not ready, try again in a second'); return; }
   try {
     await window.Clerk.signIn.authenticateWithRedirect({
       strategy: 'oauth_google',
@@ -920,13 +937,15 @@ async function signInWithGoogle() {
     });
   } catch(e) {
     console.error('Google sign in error:', e);
+    // Fallback: apri il modal Clerk nativo
+    try { window.Clerk.openSignIn(); closeAuthModal(); } catch(e2) {}
   }
 }
 
 async function signInWithEmail() {
-  // Apre il modal email di Clerk
+  if (!clerkReady) { alert('Auth not ready, try again in a second'); return; }
   try {
-    window.Clerk.openSignIn({ appearance: { baseTheme: 'dark' } });
+    window.Clerk.openSignIn();
     closeAuthModal();
   } catch(e) {
     console.error('Email sign in error:', e);
@@ -935,11 +954,7 @@ async function signInWithEmail() {
 
 async function signOut() {
   closeCtx();
-  try {
-    await window.Clerk.signOut();
-  } catch(e) {
-    console.error('Sign out error:', e);
-  }
+  try { await window.Clerk.signOut(); } catch(e) { console.error(e); }
 }
 
 function openAuthModal() {
@@ -951,7 +966,7 @@ function closeAuthModal() {
   document.body.style.overflow = '';
 }
 
-// Aggiorna token ogni 50s (scade ogni 60s)
+// Rinnova token ogni 50s
 setInterval(async () => {
   if (window.Clerk?.session) {
     try { clerkToken = await window.Clerk.session.getToken(); } catch(e) {}
